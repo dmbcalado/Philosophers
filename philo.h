@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:51:39 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/26 20:46:25 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/10/28 23:58:53 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ typedef struct s_timing
 	int				flag;
 	int				time_ran;
 	long int		t;
-	long int		time_log;
 	long int		time_start;
 	long int		time_freeze;
 	long int		time_eating;
@@ -79,6 +78,8 @@ struct	s_individual
 	t_philo			*data;
 	t_timing		timers;
 	pthread_t		philo;
+	pthread_mutex_t	*mutexstart;
+	pthread_mutex_t	*mutexprint;
 	pthread_mutex_t	*mutexfork_r;
 	pthread_mutex_t	*mutexfork_l;
 };

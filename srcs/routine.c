@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 20:32:33 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/26 20:47:21 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/10/29 02:55:16 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,6 @@
 // where we lock the deaths.
 // .......................................................................
 
-void	starting_synced(t_individual *indiv)
-{
-	int	local;
-
-	pthread_mutex_lock(&indiv->data->mutexstart);
-	indiv->data->start++;
-	local = indiv->data->start;
-	pthread_mutex_unlock(&indiv->data->mutexstart);
-	while (local < indiv->data->nbr_of_p)
-	{
-		pthread_mutex_lock(&indiv->data->mutexstart);
-		local = indiv->data->start;
-		pthread_mutex_unlock(&indiv->data->mutexstart);
-		usleep(1);
-	}
-	usleep(1);
-}
-
 void	*routine(void *ptr)
 {
 	t_philo			*info;
@@ -45,7 +27,6 @@ void	*routine(void *ptr)
 	indiv = (t_individual *)ptr;
 	info = (t_philo *)indiv->data;
 	indiv->times_eaten = 0;
-	starting_synced(indiv);
 	starting_time(indiv);
 	routina(indiv, info);
 	pthread_mutex_lock(&info->mutexend);
@@ -98,6 +79,9 @@ int	eating(t_individual *indiv, t_philo *info)
 		indiv->timers.time_eating = indiv->timers.t - indiv->timers.time_start;
 	}
 	indiv->times_eaten++;
+	while (indiv->timers.time_ran < indiv->timers.time_eating)
+		get_time(indiv);
+	printf("%d %d is sleeping\n", indiv->timers.time_ran, indiv->id);
 	unlock_forks(indiv, info);
 	if (checker(indiv, info) == 1)
 		return (1);
@@ -119,9 +103,6 @@ int	sleeping(t_individual *indiv, t_philo *info)
 	get_time(indiv);
 	if (checker(indiv, info) == 1)
 		return (1);
-	pthread_mutex_lock(&indiv->data->mutexprint);
-	printf("%d %d is sleeping.\n", indiv->timers.time_ran, indiv->id);
-	pthread_mutex_unlock(&indiv->data->mutexprint);
 	while (indiv->timers.time_sleeping < indiv->time_sleep)
 	{
 		if (checker(indiv, info) == 1)
@@ -130,10 +111,9 @@ int	sleeping(t_individual *indiv, t_philo *info)
 		indiv->timers.time_sleeping = indiv->timers.t - \
 		indiv->timers.time_freeze;
 	}
-	get_time(indiv);
-	pthread_mutex_lock(&indiv->data->mutexprint);
-	printf("%d %d is thinking.\n", indiv->timers.time_ran, indiv->id);
-	pthread_mutex_unlock(&indiv->data->mutexprint);
+	while (indiv->timers.time_ran < indiv->timers.time_eating)
+		get_time(indiv);
+	printf("%d %d is thinking\n", indiv->timers.time_ran, indiv->id);
 	indiv->timers.time_sleeping = 0;
 	if (checker(indiv, info) == 1)
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:42:59 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/26 20:26:01 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/10/29 02:38:36 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ void	destroying_philos(t_philo *info)
 	while (++i < info->nbr_of_p)
 		pthread_mutex_destroy(&info->mutexfork[i]);
 	pthread_mutex_destroy(&info->mutexend);
+	pthread_mutex_destroy(&info->mutexstart);
+	pthread_mutex_destroy(&info->mutexprint);
+	free(info->mutexfork);
 	free(info->philos);
 }
 

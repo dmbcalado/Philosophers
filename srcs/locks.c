@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 22:11:46 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/26 20:45:27 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/10/29 02:56:08 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,18 @@ int	lock_forks(t_individual *indiv, t_philo *info)
 		pthread_mutex_lock(indiv->mutexfork_l);
 		pthread_mutex_lock(indiv->mutexfork_r);
 		get_time(indiv);
+		printf("%d %d has taken a fork\n%d %d has taken a fork\n", \
+		indiv->timers.time_ran, indiv->id, indiv->timers.time_ran, indiv->id);
 		if (checker_inside_locks(indiv, info) == 1)
 			return (1);
-		pthread_mutex_lock(&indiv->data->mutexprint);
-		printf("%d %d is eating.\n", indiv->timers.time_ran, indiv->id);
-		pthread_mutex_unlock(&indiv->data->mutexprint);
+		printf("%d %d is eating\n", indiv->timers.time_ran, indiv->id);
 	}
 	else
 	{
 		pthread_mutex_lock(indiv->mutexfork_l);
 		pthread_mutex_lock(indiv->mutexfork_r);
 		get_time(indiv);
-		pthread_mutex_lock(&indiv->data->mutexprint);
-		printf("%d %d is eating.\n", indiv->timers.time_ran, indiv->id);
-		pthread_mutex_unlock(&indiv->data->mutexprint);
+		printf("%d %d is eating\n", indiv->timers.time_ran, indiv->id);
 	}
 	return (0);
 }
