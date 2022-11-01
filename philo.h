@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:51:39 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/11/01 14:42:07 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:42:32 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,4 +132,4 @@ int		eating(t_individual *indiv, t_philo *info);
 int		sleeping(t_individual *indiv, t_philo *info);
 int		thinking(t_individual *indiv, t_philo *info);
 
-#endifgiu
+#endif
