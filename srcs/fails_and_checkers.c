@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 15:29:17 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/26 20:52:27 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:40:58 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,20 @@ int	checker_inside_locks(t_individual *indiv, t_philo *info)
 	pthread_mutex_unlock(&info->mutexend);
 	if (ret > 0)
 	{
-		unlock_forks(indiv, info);
+		unlock_forks(indiv);
 		return (1);
 	}
 	if (indiv->timers.gap > indiv->time_death)
 	{
-		unlock_forks(indiv, info);
+		unlock_forks(indiv);
 		print_death(indiv, info);
 		return (1);
 	}
 	else if (indiv->times_eaten >= indiv->max_eat)
+	{
+		unlock_forks(indiv);
 		return (1);
+	}
 	return (0);
 }
 
@@ -77,6 +80,11 @@ void	exit_fail(int fail)
 		printf("Error in unlocking the mutex.\nEnding execution.\n");
 	if (fail == 7)
 		printf("Error in unlocking the mutex.\nEnding execution.\n");
+	if (fail == 8)
+	{
+		write(2, "Error\n", 6);
+		exit(2);
+	}
 }
 
 void	print_death(t_individual *indiv, t_philo *info)
@@ -91,12 +99,17 @@ void	print_death(t_individual *indiv, t_philo *info)
 		pthread_mutex_lock(&info->mutexend);
 		info->deaths++;
 		pthread_mutex_unlock(&info->mutexend);
-		if (local == 0)
-		{
-			pthread_mutex_lock(&indiv->data->mutexprint);
-			printf("%d %d died\n", indiv->timers.time_ran, \
-			indiv->id);
-			pthread_mutex_unlock(&indiv->data->mutexprint);
-		}
+		printf("%d %d died\n", indiv->timers.time_ran, \
+		indiv->id);
 	}
+}
+
+void	initilization_fail(t_philo *info)
+{
+	pthread_mutex_destroy(&info->mutexend);
+	pthread_mutex_destroy(&info->mutexprint);
+	pthread_mutex_destroy(&info->mutexstart);
+	free(info->philos);
+	write(2, "Error\n", 6);
+	exit(2);
 }

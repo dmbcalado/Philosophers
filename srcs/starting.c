@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 16:31:39 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/29 00:06:51 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:40:48 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,21 @@ void	starting_philo_data(t_philo *info, int i)
 
 void	initialization_mutexs(t_philo *info)
 {
-	int	i;
-
-	i = -1;
 	pthread_mutex_init(&info->mutexend, NULL);
 	pthread_mutex_init(&info->mutexprint, NULL);
 	pthread_mutex_init(&info->mutexstart, NULL);
 	info->mutexfork = malloc((info->nbr_of_p) * sizeof(pthread_mutex_t));
+	if (!info->mutexfork)
+		initilization_fail(info);
+	if (info->nbr_of_p > 1)
+		initialization_forks(info);
+}
+
+void	initialization_forks(t_philo *info)
+{
+	int	i;
+
+	i = -1;
 	while (++i < info->nbr_of_p)
 		pthread_mutex_init(&info->mutexfork[i], NULL);
 	i = -1;
@@ -82,7 +90,7 @@ void	initialization_mutexs(t_philo *info)
 		else
 		{
 			info->philos[i].mutexfork_l = &info->mutexfork[0];
-			info->philos[i].mutexfork_r = &info->mutexfork[info->nbr_of_p];
+			info->philos[i].mutexfork_r = &info->mutexfork[info->nbr_of_p - 1];
 		}
 	}
 }

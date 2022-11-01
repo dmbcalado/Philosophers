@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 20:32:33 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/29 02:55:16 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:26:06 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ void	*routine(void *ptr)
 	info = (t_philo *)indiv->data;
 	indiv->times_eaten = 0;
 	starting_time(indiv);
+	if (indiv->nbr_p == 1)
+	{
+		indiv->timers.time_start = indiv->timers.time_start;
+	}
 	routina(indiv, info);
 	pthread_mutex_lock(&info->mutexend);
 	info->deaths++;
@@ -70,7 +74,8 @@ int	eating(t_individual *indiv, t_philo *info)
 		return (1);
 	get_time(indiv);
 	indiv->timers.time_eating = 0;
-	indiv->timers.time_start = indiv->timers.t;
+	if (indiv->nbr_p > 1)
+		indiv->timers.time_start = indiv->timers.t;
 	while (indiv->timers.time_eating < indiv->time_eat)
 	{
 		if (checker_inside_locks(indiv, info) == 1)
@@ -81,8 +86,10 @@ int	eating(t_individual *indiv, t_philo *info)
 	indiv->times_eaten++;
 	while (indiv->timers.time_ran < indiv->timers.time_eating)
 		get_time(indiv);
+	if (checker_inside_locks(indiv, info) == 1)
+		return (1);
 	printf("%d %d is sleeping\n", indiv->timers.time_ran, indiv->id);
-	unlock_forks(indiv, info);
+	unlock_forks(indiv);
 	if (checker(indiv, info) == 1)
 		return (1);
 	return (0);
@@ -113,10 +120,9 @@ int	sleeping(t_individual *indiv, t_philo *info)
 	}
 	while (indiv->timers.time_ran < indiv->timers.time_eating)
 		get_time(indiv);
-	printf("%d %d is thinking\n", indiv->timers.time_ran, indiv->id);
-	indiv->timers.time_sleeping = 0;
 	if (checker(indiv, info) == 1)
 		return (1);
+	printf("%d %d is thinking\n", indiv->timers.time_ran, indiv->id);
+	indiv->timers.time_sleeping = 0;
 	return (0);
 }
-

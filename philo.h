@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:51:39 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/28 23:58:53 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/11/01 14:42:07 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,9 @@ struct	s_philo
 
 struct	s_individual
 {
-	int				nbr_p;
 	int				id;
+	int				flag;
+	int				nbr_p;
 	int				max_eat;
 	int				counter;
 	int				time_eat;
@@ -99,16 +100,19 @@ void	reset_timer(t_individual *indiv, t_philo *info);
 // Checkers & Fails
 
 void	exit_fail(int fail);
+void	initilization_fail(t_philo *info);
 int		checker(t_individual *indiv, t_philo *info);
 int		checker_inside_locks(t_individual *indiv, t_philo *info);
 int		check_forks(t_individual *indiv, t_philo *info);
 void	print_death(t_individual *indiv, t_philo *info);
+void	print_eating(t_individual *indiv);
 
 // Locking and Unlocking the mutexs.
 
 int		lock_forks(t_individual *indiv, t_philo *info);
-void	unlock_forks(t_individual *indiv, t_philo *info);
+void	unlock_forks(t_individual *indiv);
 void	initialization_mutexs(t_philo *info);
+void	initialization_forks(t_philo *info);
 
 // Start&End functions for the threads. and the forks lists.
 
@@ -128,4 +132,4 @@ int		eating(t_individual *indiv, t_philo *info);
 int		sleeping(t_individual *indiv, t_philo *info);
 int		thinking(t_individual *indiv, t_philo *info);
 
-#endif
+#endifgiu

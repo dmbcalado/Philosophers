@@ -6,7 +6,7 @@
 /*   By: dmendonc <dmendonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/20 14:42:59 by dmendonc          #+#    #+#             */
-/*   Updated: 2022/10/29 02:38:36 by dmendonc         ###   ########.fr       */
+/*   Updated: 2022/10/31 18:32:56 by dmendonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,21 @@ void	creating_philos(t_philo *info)
 	int	i;
 	int	deaths;
 
+	i = -1;
 	deaths = 0;
 	info->deaths = 0;
 	info->philos = (t_individual *)malloc(info->nbr_of_p * \
 	sizeof(t_individual));
-	i = -1;
+	if (!info->philos)
+		exit_fail(8);
 	while (++i < info->nbr_of_p)
 		starting_philo_data(info, i);
 	initialization_mutexs(info);
 	i = -1;
 	while (++i < info->nbr_of_p)
 	{
-		if (pthread_create(&info->philos[i].philo, NULL, &routine, \
-		&info->philos[i]) != 0)
-			exit_fail(4);
+		pthread_create(&info->philos[i].philo, NULL, &routine, \
+		&info->philos[i]);
 	}
 	while (deaths < info->nbr_of_p)
 	{
